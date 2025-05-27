@@ -1,0 +1,46 @@
+name: google_map_tracker
+description: A Flutter app for tracking location and providing navigation guidance.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # State Management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+  
+  # Map & Location
+  google_maps_flutter: ^2.12.2
+  location: ^5.0.3
+  geocoding: ^3.0.0
+  
+  # Networking
+  dio: ^5.8.0+1
+  retrofit: ^4.4.2
+  json_annotation: ^4.9.0
+  
+  # Utils
+  flutter_dotenv: ^5.2.1
+  get_it: ^8.0.3
+  flutter_polyline_points: ^2.1.0
+
+  # UI
+  cupertino_icons: ^1.0.8
+  lottie: ^3.3.1
+  flutter_animate: ^4.5.2
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+    - assets/animations/
