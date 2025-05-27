@@ -1,5 +1,12 @@
 # Google Map Tracker
 
+<div align="center">
+  <img src="https://storage.googleapis.com/cms-storage-bucket/6e19fee6b47b36ca613f.png" height="80" alt="Flutter Logo">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://developers.google.com/maps/images/maps-icon.svg" height="80" alt="Google Maps Logo">
+</div>
+
+
 ## Overview
 
 Google Map Tracker is an open-source mobile application built with Flutter that provides mapping and navigation services. The app leverages Google Maps APIs to deliver a seamless navigation experience with features such as place search, route display, and live navigation information.
