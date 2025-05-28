@@ -70,4 +70,31 @@ class GoogleMapsApiService {
 
     return response.data as Map<String, dynamic>;
   }
+
+  Future<Map<String, dynamic>> reverseGeocode({
+    required double lat,
+    required double lng,
+    required String apiKey,
+  }) async {
+    try {
+      print('Calling Google Maps Reverse Geocoding API for $lat,$lng');
+      final response = await _dio.get(
+        '$baseUrl/geocode/json',
+        queryParameters: {
+          'latlng': '$lat,$lng',
+          'key': apiKey,
+        },
+      );
+
+      print('Reverse geocoding API status code: ${response.statusCode}');
+      print('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } catch (e) {
+      print('ERROR in reverseGeocode API call: $e');
+      return {
+        'status': 'REQUEST_FAILED',
+        'error_message': e.toString(),
+      };
+    }
+  }
 }

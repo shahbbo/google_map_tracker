@@ -36,3 +36,13 @@ class SelectLocationEvent extends LocationEvent {
   @override
   List<Object?> get props => [location];
 }
+
+class ReverseGeocodeEvent extends LocationEvent {
+  final double latitude;
+  final double longitude;
+  
+  const ReverseGeocodeEvent(this.latitude, this.longitude);
+  
+  @override
+  List<Object?> get props => [latitude, longitude];
+}

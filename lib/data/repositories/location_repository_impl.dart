@@ -50,11 +50,69 @@ class LocationRepositoryImpl implements LocationRepository {
       final placeMarks = await placemarkFromCoordinates(lat, lng);
       if (placeMarks.isNotEmpty) {
         final place = placeMarks.first;
-        return '${place.street}, ${place.locality}, ${place.country}';
+        final address =
+            '${place.street ?? ''}, ${place.locality ?? ''}, ${place.country ?? ''}';
+        return address
+            .replaceAll(RegExp(r'^, |, $'), '')
+            .replaceAll(RegExp(r', ,'), ',');
       }
       return null;
     } catch (e) {
+      print('Error in getAddressFromLatLng: $e');
       return null;
+    }
+  }
+
+  @override
+  Future<LocationEntity> getAddressFromCoordinates(
+      double lat, double lng) async {
+    try {
+      print('Getting address from coordinates: $lat, $lng');
+      // First try using the geocoding package
+      String? address = await getAddressFromLatLng(lat, lng);
+
+      // If geocoding package fails, try using Google Maps API as fallback
+      if (address == null || address.isEmpty) {
+        print('Geocoding package failed, trying Google Maps API');
+        try {
+          final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY'];
+          if (apiKey != null && apiKey.isNotEmpty) {
+            final response = await _apiService.reverseGeocode(
+              lat: lat,
+              lng: lng,
+              apiKey: apiKey,
+            );
+
+            if (response['status'] == 'OK' && response['results'] != null) {
+              final results = response['results'] as List;
+              if (results.isNotEmpty) {
+                address = results.first['formatted_address'] as String?;
+                print('Google API returned address: $address');
+              }
+            }
+          }
+        } catch (apiError) {
+          print('Google Maps API error: $apiError');
+        }
+      }
+
+      final name = address?.split(',').first ?? 'Selected Location';
+
+      return LocationModel(
+        latitude: lat,
+        longitude: lng,
+        name: name,
+        address: address ?? 'Address not available',
+      );
+    } catch (e) {
+      print('Error in getAddressFromCoordinates: $e');
+      // If geocoding fails, return a basic location entity
+      return LocationModel(
+        latitude: lat,
+        longitude: lng,
+        name: 'Selected Location',
+        address: 'Address not available',
+      );
     }
   }
 

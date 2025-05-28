@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_map_tracker/domain/repositories/location_repository.dart';
 import 'package:google_map_tracker/domain/entities/location_entity.dart';
 import 'package:google_map_tracker/presentation/bloc/location/location_bloc.dart';
 import 'package:google_map_tracker/presentation/bloc/location/location_event.dart';
@@ -13,6 +15,7 @@ import 'package:google_map_tracker/presentation/bloc/navigation/navigation_event
 import 'package:google_map_tracker/presentation/bloc/navigation/navigation_state.dart';
 import 'package:google_map_tracker/presentation/screens/search_screen.dart';
 import 'package:location/location.dart' as loc;
+import 'package:lottie/lottie.dart' hide Marker;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -251,7 +254,13 @@ class _MapScreenState extends State<MapScreen> {
         listeners: [
           BlocListener<LocationBloc, LocationState>(
             listener: (context, state) {
+              final messenger = ScaffoldMessenger.of(context);
+
+              // Handle different location states
               if (state.status == LocationStatus.loaded) {
+                _updateMarkers(state, context.read<NavigationBloc>().state);
+              } else if (state.status == LocationStatus.error) {
+                // Handle error state
                 _updateMarkers(state, context.read<NavigationBloc>().state);
               }
             },
@@ -298,14 +307,10 @@ class _MapScreenState extends State<MapScreen> {
                         locationState, context.read<NavigationBloc>().state);
                   },
                   onTap: (latLng) {
-                    // Handle map tap - place marker and get address
-                    final location = LocationEntity(
-                      latitude: latLng.latitude,
-                      longitude: latLng.longitude,
-                    );
-                    context
-                        .read<LocationBloc>()
-                        .add(SelectLocationEvent(location));
+                    context.read<LocationBloc>().add(
+                          ReverseGeocodeEvent(
+                              latLng.latitude, latLng.longitude),
+                        );
                   },
                 );
               },
@@ -479,7 +484,11 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton.icon(
-                              icon: const Icon(Icons.navigation),
+                              icon: LottieBuilder.asset(
+                                  height: 40,
+                                  width: 40,
+                                  'assets/animations/navigation.json'),
+                              // icon: const Icon(Icons.navigation),
                               label: const Text('Start Navigation'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:

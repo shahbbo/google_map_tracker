@@ -16,18 +16,15 @@ dependencies:
   
   # Map & Location
   google_maps_flutter: ^2.12.2
-  location: ^5.0.3
+  location: ^8.0.0
   geocoding: ^3.0.0
   
   # Networking
   dio: ^5.8.0+1
-  retrofit: ^4.4.2
-  json_annotation: ^4.9.0
-  
+
   # Utils
   flutter_dotenv: ^5.2.1
   get_it: ^8.0.3
-  flutter_polyline_points: ^2.1.0
 
   # UI
   cupertino_icons: ^1.0.8
